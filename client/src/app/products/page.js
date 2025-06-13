@@ -1,24 +1,10 @@
-/**
- * Title: Write a program using JavaScript on Page
- * Author: Hasibul Islam
- * Portfolio: https://devhasibulislam.vercel.app
- * Linkedin: https://linkedin.com/in/devhasibulislam
- * GitHub: https://github.com/devhasibulislam
- * Facebook: https://facebook.com/devhasibulislam
- * Instagram: https://instagram.com/devhasibulislam
- * Twitter: https://twitter.com/devhasibulislam
- * Pinterest: https://pinterest.com/devhasibulislam
- * WhatsApp: https://wa.me/8801906315901
- * Telegram: devhasibulislam
- * Date: 03, November 2023
- */
 
 "use client";
 
 import Banner3 from "@/components/home/Banner3";
 import ExpertChoice from "@/components/home/ExpertChoice";
-import FilterSidebar from "@/components/porducts/FilterSidebar";
-import FilteredProducts from "@/components/porducts/FilteredProducts";
+import FilterSidebar from "@/components/products/FilterSidebar";
+import FilteredProducts from "@/components/products/FilteredProducts";
 import Container from "@/components/shared/Container";
 import Main from "@/components/shared/layouts/Main";
 import React from "react";

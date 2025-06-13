@@ -47,7 +47,7 @@ const Trending = () => {
             What&lsquo;s <span className="">Trending Now</span>
           </h1>
           <p className="text-base">
-            Discover the most trending products in Canim.
+            Discover the most trending products.
           </p>
         </div>
         <div className="flex flex-col gap-y-12">

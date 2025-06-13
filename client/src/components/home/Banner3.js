@@ -36,7 +36,7 @@ const Banner3 = ({ className }) => {
         />
         <article className="flex flex-col justify-start items-end order-1">
           <div className="flex flex-col gap-y-4 max-w-lg z-50 lg:mr-auto lg:mr-0 mr-auto">
-            <h1 className="md:text-6xl text-4xl">Earn free money with Canim</h1>
+            <h1 className="md:text-6xl text-4xl">Eco-platform connecting retailers & shoppers via green scores, smart logistics & reward gamification</h1>
             <p className="flex flex-row gap-x-0.5 items-center text-lg text-slate-500">
               With Ciseco you will get free-shipping & savings combo.
             </p>

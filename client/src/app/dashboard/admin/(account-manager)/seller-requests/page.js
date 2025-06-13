@@ -1,17 +1,4 @@
-/**
- * Title: Write a program using JavaScript on Page
- * Author: Hasibul Islam
- * Portfolio: https://devhasibulislam.vercel.app
- * Linkedin: https://linkedin.com/in/devhasibulislam
- * GitHub: https://github.com/devhasibulislam
- * Facebook: https://facebook.com/devhasibulislam
- * Instagram: https://instagram.com/devhasibulislam
- * Twitter: https://twitter.com/devhasibulislam
- * Pinterest: https://pinterest.com/devhasibulislam
- * WhatsApp: https://wa.me/8801906315901
- * Telegram: devhasibulislam
- * Date: 20, January 2024
- */
+
 
 "use client";
 
@@ -55,16 +42,17 @@ const Page = () => {
         <section className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
           {users?.map((user) => (
             <div
-              key={user?._id}
+              key={user?._id || index}
               className="flex flex-col gap-y-2 border rounded p-4 relative group cursor-default"
             >
               <Image
-                src={user?.avatar?.url}
-                alt={user?.avatar?.public_id}
+                src={user?.avatar?.url || "https://via.placeholder.com/50"}
+                alt={user?.avatar?.public_id || "User Avatar"}
                 width={50}
                 height={50}
                 className="h-[50px] w-[50px] rounded-secondary object-cover"
               />
+
               <div className="flex flex-col gap-y-0.5">
                 <h2 className="truncate">{user?.name}</h2>
                 <p className="truncate text-sm">{user?.email}</p>

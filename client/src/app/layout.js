@@ -5,13 +5,13 @@ import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   metadataBase: new URL("https://canim-csr.vercel.app"),
-  title: "Canim - Shop & eCommerce React Template",
+  title: "Sparkathon",
   description:
-    "Buy Canim - Shop & eCommerce Next.Js Template by Hasibul Islam. Canim | Shop & eCommerce React Template - a responsive React template. Canim is built with the latest Next.Js 13 App Directory",
+    "Eco-platform connecting retailers & shoppers via green scores, smart logistics & reward gamification",
   openGraph: {
-    title: "Canim - Shop & eCommerce React Template",
+    title: "Sparkathon",
     description:
-      "Buy Canim - Shop & eCommerce Next.Js Template by Hasibul Islam. Canim | Shop & eCommerce React Template - a responsive React template. Canim is built with the latest Next.Js 13 App Directory",
+      "Eco-platform connecting retailers & shoppers via green scores, smart logistics & reward gamification",
     url: "https://canim-csr.vercel.app",
     siteName: "Canim Template",
     images:

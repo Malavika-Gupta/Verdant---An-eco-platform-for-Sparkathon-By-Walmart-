@@ -1,50 +1,50 @@
-/**
- * Title: Write a program using JavaScript on Page
- * Author: Hasibul Islam
- * Portfolio: https://devhasibulislam.vercel.app
- * Linkedin: https://linkedin.com/in/devhasibulislam
- * GitHub: https://github.com/devhasibulislam
- * Facebook: https://facebook.com/devhasibulislam
- * Instagram: https://instagram.com/devhasibulislam
- * Twitter: https://twitter.com/devhasibulislam
- * Pinterest: https://pinterest.com/devhasibulislam
- * WhatsApp: https://wa.me/8801906315901
- * Telegram: devhasibulislam
- * Date: 20, January 2024
- */
-
 "use client";
 
 import Inform from "@/components/icons/Inform";
 import Dashboard from "@/components/shared/layouts/Dashboard";
 import { setCart } from "@/features/cart/cartSlice";
-import { useGetFromCartQuery } from "@/services/cart/cartApi";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 
+// ✅ Import Firestore helpers
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { app } from "@/services/firebase";
+
 const Page = () => {
-  const { isLoading, data, error } = useGetFromCartQuery();
-  const cart = useMemo(() => data?.data || [], [data]);
+  const [cartDocs, setCartDocs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
+  const db = getFirestore(app);
+
+  // ✅ Firestore data instead of old API
   useEffect(() => {
-    if (isLoading) {
+    const fetchCart = async () => {
+      setIsLoading(true);
       toast.loading("Fetching Cart...", { id: "cart" });
-    }
 
-    if (data) {
-      toast.success(data?.description, { id: "cart" });
-    }
+      try {
+        const cartSnapshot = await getDocs(collection(db, "cart"));
+        const cartData = cartSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setCartDocs(cartData);
 
-    if (error?.data) {
-      toast.error(error?.data?.description, { id: "cart" });
-    }
+        toast.success("Cart fetched!", { id: "cart" });
+        dispatch(setCart(cartData)); // Redux store if needed
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to fetch cart", { id: "cart" });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    dispatch(setCart(cart));
-  }, [isLoading, data, error, dispatch, cart]);
+    fetchCart();
+  }, [db, dispatch]);
+
+  const cart = useMemo(() => cartDocs || [], [cartDocs]);
 
   return (
     <Dashboard>
@@ -58,86 +58,54 @@ const Page = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-slate-100">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Avatar
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Name
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Thumbnail
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Title
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Gallery
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Price
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Quantity
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Total
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap"
-                  >
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase whitespace-nowrap">
                     Action
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {cart.map((crt) => (
-                  <tr
-                    key={crt?._id}
-                    className="odd:bg-white even:bg-gray-100 hover:odd:bg-gray-100"
-                  >
+                  <tr key={crt?.id} className="odd:bg-white even:bg-gray-100 hover:odd:bg-gray-100">
                     <td className="px-6 py-4">
                       <Image
                         src={crt?.user?.avatar?.url}
-                        alt={crt?.user?.avatar?.public_id}
+                        alt={crt?.user?.name}
                         height={30}
                         width={30}
                         className="h-[30px] w-[30px] rounded-secondary border border-green-500/50 object-cover"
                       />
                     </td>
                     <td className="px-6 py-4">
-                      <span className="whitespace-nowrap text-sm">
-                        {crt?.user?.name}
-                      </span>
+                      <span className="whitespace-nowrap text-sm">{crt?.user?.name}</span>
                     </td>
                     <td className="px-6 py-4">
                       <Image
                         src={crt?.product?.thumbnail?.url}
-                        alt={crt?.product?.thumbnail?.public_id}
+                        alt={crt?.product?.title}
                         height={30}
                         width={30}
                         className="h-[30px] w-[30px] rounded-secondary border border-green-500/50 object-cover"
@@ -150,11 +118,11 @@ const Page = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex -space-x-4">
-                        {crt?.product?.gallery.map((thumbnail) => (
+                        {crt?.product?.gallery?.map((thumbnail) => (
                           <Image
-                            key={thumbnail?._id}
+                            key={thumbnail?.id}
                             src={thumbnail?.url}
-                            alt={thumbnail?.public_id}
+                            alt={thumbnail?.url}
                             height={30}
                             width={30}
                             className="h-[30px] w-[30px] rounded-secondary border border-green-500/50 object-cover"
@@ -163,14 +131,10 @@ const Page = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="whitespace-nowrap scrollbar-hide text-sm">
-                        {crt?.product?.price}
-                      </span>
+                      <span className="whitespace-nowrap scrollbar-hide text-sm">{crt?.product?.price}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="whitespace-nowrap scrollbar-hide text-sm">
-                        {crt?.quantity}
-                      </span>
+                      <span className="whitespace-nowrap scrollbar-hide text-sm">{crt?.quantity}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="whitespace-nowrap scrollbar-hide text-sm">
@@ -179,11 +143,7 @@ const Page = () => {
                     </td>
                     <td className="px-6 py-4">
                       <Link
-                        href={`/product?product_id=${
-                          crt?.product?._id
-                        }&product_title=${crt?.product?.title
-                          .replace(/ /g, "-")
-                          .toLowerCase()}}`}
+                        href={`/product?product_id=${crt?.product?.id}&product_title=${crt?.product?.title?.replace(/ /g, "-").toLowerCase()}`}
                         target="_blank"
                         className="underline text-sm"
                       >

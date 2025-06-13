@@ -1,60 +1,39 @@
-/**
- * Title: Write a program using JavaScript on Page
- * Author: Hasibul Islam
- * Portfolio: https://devhasibulislam.vercel.app
- * Linkedin: https://linkedin.com/in/devhasibulislam
- * GitHub: https://github.com/devhasibulislam
- * Facebook: https://facebook.com/devhasibulislam
- * Instagram: https://instagram.com/devhasibulislam
- * Twitter: https://twitter.com/devhasibulislam
- * Pinterest: https://pinterest.com/devhasibulislam
- * WhatsApp: https://wa.me/8801906315901
- * Telegram: devhasibulislam
- * Date: 08, November 2023
- */
-
 "use client";
 
 import Spinner from "@/components/shared/Spinner";
-import { useForgotPasswordMutation } from "@/services/auth/authApi";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { app } from "@/services/firebase"; // your firebase.js path
 
 const ResetPassword = () => {
   const router = useRouter();
-  const [forgotpassword, { isLoading, data, error }] =
-    useForgotPasswordMutation();
+  const auth = getAuth(app);
 
-  useEffect(() => {
-    if (isLoading) {
-      toast.loading("Resetting password...", { id: "forgot-password" });
-    }
+  const [isLoading, setIsLoading] = useState(false);
 
-    if (data) {
-      toast.success(data?.description, { id: "forgot-password" });
-
-      // open new tab
-      setTimeout(() => {
-        window.open("/auth/signin", "_self");
-      }, 1000);
-    }
-    if (error?.data) {
-      toast.error(error?.data?.description, { id: "forgot-password" });
-    }
-  }, [data, error, router, isLoading]);
-
-  const handleResetPassword = (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
+    const email = e.target.email.value;
 
-    forgotpassword({
-      email: e.target.email.value,
-      password: e.target.password.value,
-    });
+    setIsLoading(true);
+    toast.loading("Sending reset link...", { id: "forgot-password" });
 
-    e.target.reset();
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset email sent! Check your inbox.", { id: "forgot-password" });
+      e.target.reset();
+      setTimeout(() => {
+        router.push("/auth/signin");
+      }, 1000);
+    } catch (error) {
+      toast.error(error.message, { id: "forgot-password" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -73,7 +52,6 @@ const ResetPassword = () => {
           <hr className="w-full" />
         </div>
         <form
-          action=""
           className="w-full flex flex-col gap-y-4"
           onSubmit={handleResetPassword}
         >
@@ -84,18 +62,6 @@ const ResetPassword = () => {
               name="email"
               id="email"
               placeholder="i.e. example@gmail.com"
-              className=""
-              required
-            />
-          </label>
-          <label htmlFor="password" className="flex flex-col gap-y-1">
-            <span className="text-sm">Enter New Password</span>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="i.e. Admin@123"
-              className=""
               required
             />
           </label>
@@ -104,17 +70,13 @@ const ResetPassword = () => {
             disabled={isLoading}
             className="py-2 border border-black rounded-secondary bg-black hover:bg-black/90 text-white transition-colors drop-shadow disabled:bg-gray-200 disabled:border-gray-200 disabled:text-black/50 disabled:cursor-not-allowed flex flex-row justify-center items-center text-sm"
           >
-            {isLoading ? <Spinner /> : "Forgot Password"}
+            {isLoading ? <Spinner /> : "Send Reset Link"}
           </button>
         </form>
         <div className="flex flex-row justify-center items-center gap-x-2 text-xs">
-          <Link href="/auth/signin" className="">
-            Sign In
-          </Link>
+          <Link href="/auth/signin">Sign In</Link>
           <span className="h-4 border-l" />
-          <Link href="/auth/signup" className="">
-            Sign Up
-          </Link>
+          <Link href="/auth/signup">Sign Up</Link>
         </div>
       </div>
     </section>
