@@ -35,8 +35,8 @@ const Header = () => {
           <Image
             src="/logo.png"
             alt="logo"
-            width={141}
-            height={40}
+            width={250}
+            height={100}
             className="h-[40px] object-contain md:block hidden cursor-pointer"
             onClick={() => window.open("/", "_self")}
           />

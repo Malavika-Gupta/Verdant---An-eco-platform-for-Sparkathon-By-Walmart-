@@ -12,8 +12,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "https://github.com/devhasibulislam/ciseco-ecommerce",
-  "author": "Hasibul Islam",
+  "repository": "https://github.com/Malavika-Gupta/Verdant---An-eco-platform-for-Sparkathon-By-Walmart-",
+  "author": "Malavika Gupta",
   "license": "MIT",
   "private": true,
   "dependencies": {
